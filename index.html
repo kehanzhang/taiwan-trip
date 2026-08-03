@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taiwan East Coast Loop — Sep 29 to Oct 7</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a2129;
+    --card: #212a34;
+    --text: #e8edf2;
+    --muted: #8fa1b3;
+    --accent: #4fc3f7;
+    --bus: #ffb74d;
+    --train: #81c784;
+    --ferry: #4fc3f7;
+    --flight: #ce93d8;
+    --hike: #ef9a9a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    display: flex; height: 100vh; overflow: hidden;
+  }
+  #sidebar {
+    width: 440px; min-width: 340px; overflow-y: auto;
+    background: var(--panel); padding: 20px;
+    border-right: 1px solid #2c3540;
+  }
+  #map { flex: 1; }
+  h1 { font-size: 1.3em; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 0.85em; margin-bottom: 16px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; font-size: 0.75em; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+  .day {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 10px; cursor: pointer; border: 1px solid transparent;
+    transition: border-color .15s;
+  }
+  .day:hover { border-color: #3a4653; }
+  .day.active { border-color: var(--accent); }
+  .day-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .day-date { font-weight: 700; font-size: 0.95em; }
+  .day-stay { font-size: 0.75em; color: var(--accent); }
+  .day-title { color: var(--muted); font-size: 0.85em; margin-top: 2px; }
+  .photos { display: flex; gap: 6px; margin-top: 10px; overflow-x: auto; }
+  .photos img {
+    height: 72px; border-radius: 6px; flex: 0 0 auto; cursor: zoom-in;
+    object-fit: cover; width: 108px; background: #16202a;
+  }
+  .day.active .photos img { height: 100px; width: auto; max-width: 100%; }
+  .day-body { display: none; margin-top: 10px; font-size: 0.85em; line-height: 1.55; }
+  .day.active .day-body { display: block; }
+  .day-body h4 { font-size: 0.9em; margin: 10px 0 4px; color: var(--accent); }
+  .day-body ul { padding-left: 18px; color: #c8d3de; }
+  .day-body li { margin-bottom: 3px; }
+  .tip { background: #16202a; border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; margin-top: 8px; color: var(--muted); font-size: 0.95em; }
+  .option { background: #16202a; border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
+  .option b { color: var(--accent); }
+  .nights { background: var(--card); border-radius: 10px; padding: 14px 16px; font-size: 0.85em; color: var(--muted); }
+  .nights b { color: var(--text); }
+  .credit { font-size: 0.7em; color: #5a6b7c; margin-top: 10px; }
+  #lightbox {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85);
+    z-index: 2000; cursor: zoom-out; align-items: center; justify-content: center;
+  }
+  #lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 8px; }
+  .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--card); color: var(--text); }
+  .leaflet-popup-content { font-size: 13px; }
+  .marker-label { font-weight: 700; font-size: 12px; color: #fff; text-shadow: 0 1px 3px #000, 0 0 6px #000; white-space: nowrap; }
+  @media (max-width: 760px) {
+    body { flex-direction: column; }
+    #sidebar { width: 100%; min-width: 0; height: 55vh; order: 2; }
+    #map { height: 45vh; }
+  }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <h1>Taiwan East Coast Loop</h1>
+  <div class="subtitle">Sep 29 – Oct 7 · Taipei → Jiufen → Taitung → Green Island ×2 → Yuli/Walami → Taipei</div>
+  <div class="legend">
+    <span><i style="background:var(--bus)"></i> Bus</span>
+    <span><i style="background:var(--train)"></i> Train</span>
+    <span><i style="background:var(--ferry)"></i> Ferry</span>
+    <span><i style="background:var(--hike)"></i> Hike</span>
+  </div>
+  <div id="days"></div>
+  <div class="nights">
+    <b>Nights:</b> Taipei ×3 · Jiufen ×1 · Taitung ×1 · Green Island ×2 · Yuli ×1<br><br>
+    Hike, island rest valley, hike: Teapot Mountain on the way down, two unhurried Green Island days in the middle, Walami on the way back. No flights, no monster travel days.
+    <div class="credit">Photos: Wikimedia Commons</div>
+  </div>
+</div>
+<div id="map"></div>
+<div id="lightbox"><img alt=""></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const PLACES = {
+  taipei:     { name: "Taipei",            ll: [25.0478, 121.5170] },
+  jiufen:     { name: "Jiufen",            ll: [25.1097, 121.8442] },
+  jinguashi:  { name: "Jinguashi",         ll: [25.1078, 121.8578] },
+  teapot:     { name: "Teapot Mountain",   ll: [25.1042, 121.8664] },
+  ruifang:    { name: "Ruifang Station",   ll: [25.1088, 121.8060] },
+  hualien:    { name: "Hualien",           ll: [23.9930, 121.6011] },
+  yuli:       { name: "Yuli",              ll: [23.3319, 121.3117] },
+  walami:     { name: "Walami Trailhead",  ll: [23.3405, 121.4103] },
+  taitung:    { name: "Taitung",           ll: [22.7583, 121.1444] },
+  fugang:     { name: "Fugang Harbor",     ll: [22.7906, 121.1911] },
+  green:      { name: "Green Island (Nanliao)", ll: [22.6737, 121.4907] },
+};
+
+const MODE_COLOR = { bus: "#ffb74d", train: "#81c784", ferry: "#4fc3f7", hike: "#ef9a9a", taxi: "#ffb74d" };
+
+const WM = "https://upload.wikimedia.org/wikipedia/commons/thumb/";
+
+const DAYS = [
+  {
+    date: "Sep 29", title: "Arrive Taipei — artsy evening & night market", stay: "Taipei",
+    places: ["taipei"],
+    legs: [],
+    photos: [
+      [WM + "a/a1/Huashan_1914_Creative_Park_Chuan_Ching_Stage_2015.jpg/960px-Huashan_1914_Creative_Park_Chuan_Ching_Stage_2015.jpg", "Huashan 1914 Creative Park"],
+      [WM + "b/b0/Taipei_Taiwan_Zhongshan-Hall-01.jpg/960px-Taipei_Taiwan_Zhongshan-Hall-01.jpg", "Zhongshan Hall"],
+      [WM + "5/52/Shilin_Night_Market_02.jpg/960px-Shilin_Night_Market_02.jpg", "Shilin Night Market"],
+    ],
+    body: `
+      <h4>Activities</h4>
+      <ul>
+        <li>Arrive and settle in</li>
+        <li>Easy artsy neighborhood evening: Zhongshan, Dadaocheng, Huashan 1914, or Songshan Cultural Park</li>
+        <li>Night market or casual food crawl</li>
+      </ul>
+      <div class="tip">No car needed. Stay near Taipei Main Station, Zhongshan, or Ximen for an easy departure toward Jiufen.</div>`
+  },
+  {
+    date: "Sep 30", title: "Taipei → Jiufen — old street & tea houses", stay: "Jiufen",
+    places: ["taipei", "jiufen"],
+    legs: [{ from: "taipei", to: "jiufen", mode: "bus", label: "Bus 965 (Ximen/Beimen → Jiufen)" }],
+    photos: [
+      [WM + "c/cb/Jiufen%2C_November_28%2C_2024_-_019.jpg/960px-Jiufen%2C_November_28%2C_2024_-_019.jpg", "Jiufen hillside"],
+      [WM + "f/f0/Shengping_Theater%2C_Jiufen%2C_New_Taipei%2C_Feb_2025.jpg/960px-Shengping_Theater%2C_Jiufen%2C_New_Taipei%2C_Feb_2025.jpg", "Shengping Theater"],
+      [WM + "a/ad/A-Zhu_Peanut_Ice_Cream_Roll%2C_Jiufen_Old_Street%2C_2024.jpg/960px-A-Zhu_Peanut_Ice_Cream_Roll%2C_Jiufen_Old_Street%2C_2024.jpg", "Peanut ice cream roll, Jiufen Old Street"],
+    ],
+    body: `
+      <h4>Activities</h4>
+      <ul>
+        <li>Slow afternoon around Jiufen Old Street</li>
+        <li>Tea house, hillside alleys, Shengping Theater and viewpoints</li>
+        <li>Experience Jiufen after most day-trippers leave</li>
+      </ul>
+      <h4>Logistics</h4>
+      <ul>
+        <li>Simplest: direct 965 bus from the Ximen/Beimen area</li>
+        <li>Alternative: TRA train to Ruifang, then local bus or taxi uphill</li>
+      </ul>
+      <div class="tip">The 965 route connects Taipei, Ruifang, Jiufen and Jinguashi, including the Gold Museum area. Leave luggage at the Jiufen hotel tomorrow morning while hiking.</div>`
+  },
+  {
+    date: "Oct 1", title: "Jinguashi hiking day → long train to Taitung", stay: "Taitung",
+    places: ["jiufen", "jinguashi", "teapot", "ruifang", "hualien", "taitung"],
+    legs: [
+      { from: "jiufen", to: "jinguashi", mode: "bus", label: "Bus/taxi Jiufen → Jinguashi" },
+      { from: "jinguashi", to: "teapot", mode: "hike", label: "Teapot Mountain hike" },
+      { from: "jiufen", to: "ruifang", mode: "bus", label: "Bus/taxi down to Ruifang" },
+      { from: "ruifang", to: "hualien", mode: "train", label: "TRA south (change in Hualien if needed)" },
+      { from: "hualien", to: "taitung", mode: "train", label: "TRA Hualien → Taitung" },
+    ],
+    photos: [
+      [WM + "e/e6/Teapot_mountain_pano.png/960px-Teapot_mountain_pano.png", "Teapot Mountain panorama"],
+      [WM + "a/a1/Golden_Waterfall_20200316_01.jpg/960px-Golden_Waterfall_20200316_01.jpg", "Golden Waterfall"],
+      [WM + "8/88/Tiehua_Village_marker.jpg/960px-Tiehua_Village_marker.jpg", "Tiehua Village, Taitung"],
+    ],
+    body: `
+      <h4>Primary hike</h4>
+      <ul>
+        <li><b>Teapot Mountain</b> — overlooks Jinguashi and the Yin-Yang Sea</li>
+        <li>Optional extension toward Banping Mountain if weather and timing are good</li>
+        <li>Optional short Baoshi Mountain viewpoint trail</li>
+      </ul>
+      <h4>Nearby</h4>
+      <ul>
+        <li>Gold Museum · Qitang Old Street · Golden Waterfall · Yin-Yang Sea and the old mining landscape</li>
+      </ul>
+      <h4>Logistics</h4>
+      <ul>
+        <li>Bus or taxi Jiufen → Jinguashi, hike and explore</li>
+        <li>Return to Jiufen for luggage, then down to Ruifang Station</li>
+        <li>Reserved TRA train all the way to Taitung (~4.5–5 h; change in Hualien only if the selected train requires it)</li>
+        <li>Late dinner around Tiehua / Taitung night market</li>
+      </ul>
+      <div class="tip">This is the one long travel day of the trip — start the hike early so you can catch a mid-afternoon train. Book when reservations open, currently 28 days in advance.</div>`
+  },
+  {
+    date: "Oct 2", title: "Morning ferry to Green Island — coastal loop day", stay: "Green Island (Nanliao)",
+    places: ["taitung", "fugang", "green"],
+    legs: [
+      { from: "taitung", to: "fugang", mode: "taxi", label: "Taxi to Fugang Harbor" },
+      { from: "fugang", to: "green", mode: "ferry", label: "Ferry ~50–60 min" },
+    ],
+    photos: [
+      [WM + "4/4d/Clownfish_off_the_coast_of_the_Green_Island_1.jpg/960px-Clownfish_off_the_coast_of_the_Green_Island_1.jpg", "Clownfish off Green Island"],
+      [WM + "3/30/Green_Island_Lighthouse_202007.png/960px-Green_Island_Lighthouse_202007.png", "Green Island Lighthouse"],
+      [WM + "4/4f/Zhaori_Hot_Springs.jpg/960px-Zhaori_Hot_Springs.jpg", "Zhaori Hot Springs"],
+    ],
+    body: `
+      <h4>Activities</h4>
+      <ul>
+        <li>Morning ferry, check in, pick up the three prebooked <b>license-free micro electric two-wheelers</b></li>
+        <li>Coastal loop (~19 km, half a day done properly): Little Great Wall, Pekinese Dog &amp; Sleeping Beauty rocks, Guanyin Cave, lighthouse and its beach</li>
+        <li>Optional shore snorkeling at Shilanbi or Chaikou — shallow, guided, from the beach</li>
+        <li>Sunset viewpoint, wild sika deer and goats at dusk</li>
+        <li><b>Zhaori Hot Spring</b> night soak</li>
+      </ul>
+      <h4>Logistics</h4>
+      <ul>
+        <li>Taxi Taitung → Fugang Harbor, ferry to Nanliao (~50–60 min)</li>
+        <li>Confirm in writing the vehicles are single-seat, license-free models — not ordinary electric scooters</li>
+      </ul>
+      <div class="tip">Reserve a morning crossing — ferry schedules shift with tides and weather. Take only overnight bags; leave big luggage with the Taitung hotel (you will not pass back through for two days, so confirm they'll hold it).</div>`
+  },
+  {
+    date: "Oct 3", title: "Slow Green Island day — memorial, trail, rest", stay: "Green Island (Nanliao)",
+    places: ["green"],
+    legs: [],
+    photos: [
+      [WM + "0/0f/Human_Rights_Memorial_Park_Lyudao.jpg/960px-Human_Rights_Memorial_Park_Lyudao.jpg", "Human Rights / White Terror Memorial Park"],
+      [WM + "c/ce/Lyudao_Dabaisha.jpg/960px-Lyudao_Dabaisha.jpg", "Dabaisha beach"],
+      [WM + "b/b5/Young_sika_deer_Green_Island_Taiwan.jpg/960px-Young_sika_deer_Green_Island_Taiwan.jpg", "Sika deer"],
+    ],
+    body: `
+      <h4>Deliberately empty — two anchors only</h4>
+      <ul>
+        <li>Sunrise soak at <b>Zhaori</b> for whoever wakes up (the famous session)</li>
+        <li>Long breakfast in Nanliao</li>
+        <li><b>White Terror Memorial Park</b> — the former political-prison complex; genuinely 2–3 hours and the most affecting thing on the island</li>
+        <li>Cross-island old trail (Guo Shan Gu Dao) — gentle 1.8 km through the interior, deer likely</li>
+        <li>Swim at Dabaisha, or just ride to a viewpoint at golden hour</li>
+      </ul>
+      <div class="tip">This is the rest valley between Teapot Mountain and Walami — nothing today is mandatory. If you get restless, tomorrow's escape valve: take the morning ferry instead of midday and gain a Taitung afternoon (Tiehua Village, seaside bikeway).</div>`
+  },
+  {
+    date: "Oct 4", title: "Ferry back → short hop to Yuli", stay: "Yuli",
+    places: ["green", "fugang", "taitung", "yuli"],
+    legs: [
+      { from: "green", to: "fugang", mode: "ferry", label: "Ferry back to Fugang" },
+      { from: "fugang", to: "taitung", mode: "taxi", label: "Taxi to Taitung Station (via hotel for luggage)" },
+      { from: "taitung", to: "yuli", mode: "train", label: "TRA Taitung → Yuli ~40 min" },
+    ],
+    photos: [
+      [WM + "7/76/Taiwan_Fugang_Fishery_Harbor.JPG/960px-Taiwan_Fugang_Fishery_Harbor.JPG", "Fugang Fishery Harbor"],
+      [WM + "e/e1/Zhaori_Hot_Springs_20150128.jpg/960px-Zhaori_Hot_Springs_20150128.jpg", "Zhaori Hot Springs at dawn"],
+      [WM + "5/52/TRA_DR2060_at_Taitung_Railway_Art_Village_20150727b.jpg/960px-TRA_DR2060_at_Taitung_Railway_Art_Village_20150727b.jpg", "Taitung Railway Art Village"],
+    ],
+    body: `
+      <h4>Morning</h4>
+      <ul>
+        <li>Last swim, viewpoint, or the memorial if you saved it</li>
+        <li>Midday ferry back — or morning ferry for a free Taitung afternoon (decide on the day, no rebooking)</li>
+      </ul>
+      <h4>Logistics</h4>
+      <ul>
+        <li>Ferry Green Island → Fugang</li>
+        <li>Taxi via the Taitung hotel to collect stored luggage, then to the station</li>
+        <li>TRA Taitung → Yuli, ~40 min — the only onward commitment today</li>
+        <li>Quiet evening in Yuli; noodles are the local specialty</li>
+      </ul>
+      <div class="tip">This is why the return is stress-free: if the ferry runs late, you're catching a 40-minute local train, not a flight. Trains run all evening.</div>`
+  },
+  {
+    date: "Oct 5", title: "Walami Trail → afternoon train to Taipei", stay: "Taipei",
+    places: ["yuli", "walami", "hualien", "taipei"],
+    legs: [
+      { from: "yuli", to: "walami", mode: "taxi", label: "Prearranged taxi to trailhead & back" },
+      { from: "yuli", to: "hualien", mode: "train", label: "TRA Yuli → Hualien" },
+      { from: "hualien", to: "taipei", mode: "train", label: "TRA Hualien → Taipei (~3.5–4 h total)" },
+    ],
+    photos: [
+      [WM + "c/c7/Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio.jpg/960px-Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio.jpg", "Walami Trail"],
+      [WM + "4/4b/Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio_%281%29.jpg/960px-Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio_%281%29.jpg", "Walami Trail cliff path"],
+    ],
+    body: `
+      <h4>Primary hike</h4>
+      <ul>
+        <li><b>Walami Trail</b> — trailhead toward Shanfeng Waterfall / Jiaxin</li>
+        <li>Jungle, suspension bridges, river valley and mountain scenery</li>
+        <li>Best practical substitute for the classic Taroko hiking experience</li>
+      </ul>
+      <div class="tip">The lower recreational section is relatively gentle — fine the morning after a beach day; permits are required only beyond the Jiaxin / 7 km boundary.</div>
+      <h4>Logistics</h4>
+      <ul>
+        <li>Prearrange a taxi or local driver Yuli ⇄ Walami trailhead (ask the Yuli hotel)</li>
+        <li>Hotel holds luggage during the hike — same trick as Jiufen</li>
+        <li>Afternoon reserved train north, ~3.5–4 h (direct or change in Hualien)</li>
+        <li>Arrive Taipei in time for a night market dinner</li>
+      </ul>`
+  },
+  {
+    date: "Oct 6", title: "Full Taipei day — landmarks, culture & food", stay: "Taipei",
+    places: ["taipei"],
+    legs: [],
+    photos: [
+      [WM + "2/27/Chiang_Kai-shek_Memorial_Gate_e_amk.jpg/960px-Chiang_Kai-shek_Memorial_Gate_e_amk.jpg", "Chiang Kai-shek Memorial gate"],
+      [WM + "1/1a/Taipei_101_2009_amk-EditMylius.jpg/960px-Taipei_101_2009_amk-EditMylius.jpg", "Taipei 101"],
+      [WM + "3/38/Shophouses_in_Dihua_Street_20260410.jpg/960px-Shophouses_in_Dihua_Street_20260410.jpg", "Dihua Street shophouses"],
+    ],
+    body: `
+      <h4>Activities</h4>
+      <ul>
+        <li>Dihua Street and Dadaocheng in the morning</li>
+        <li>Huashan 1914 Creative Park, museum or gallery</li>
+        <li>Chiang Kai-shek Memorial Hall</li>
+        <li>Taipei 101 or Elephant Mountain — sunset from Elephant Mountain pairs well with 101</li>
+        <li>Final night market run</li>
+      </ul>
+      <div class="tip">Beitou onsen is possible today, but Zhaori already gave you the more distinctive hot-spring experience. Nothing today needs advance booking, so this day also absorbs any overflow from the trip.</div>`
+  },
+  {
+    date: "Oct 7", title: "Departure", stay: "—",
+    places: ["taipei"],
+    legs: [],
+    photos: [],
+    body: `<ul><li>Depart Taiwan. With a full Taipei day behind you, no need to cram anything this morning.</li></ul>`
+  },
+];
+
+// --- Map ---
+const map = L.map("map", { zoomSnap: 0.25 }).setView([24.0, 121.4], 7.5);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 18,
+}).addTo(map);
+
+// Full-route backdrop (always visible, faint)
+const FULL_ROUTE = [
+  ["taipei", "jiufen", "bus"], ["jiufen", "ruifang", "bus"],
+  ["ruifang", "hualien", "train"], ["hualien", "taitung", "train"],
+  ["taitung", "fugang", "taxi"], ["fugang", "green", "ferry"],
+  ["taitung", "yuli", "train"], ["yuli", "hualien", "train"],
+];
+const backdropLines = FULL_ROUTE.map(([a, b, mode]) =>
+  L.polyline([PLACES[a].ll, PLACES[b].ll], { color: "#5a6b7c", weight: 2, opacity: 0.5, dashArray: mode === "ferry" ? "6 6" : null }).addTo(map)
+);
+
+// Markers with labels, kept by key so the active day can dim the rest
+const baseMarkers = {};
+Object.entries(PLACES).forEach(([key, p]) => {
+  baseMarkers[key] = L.circleMarker(p.ll, { radius: 5, color: "#fff", weight: 1.5, fillColor: "#4fc3f7", fillOpacity: 1 }).addTo(map)
+    .bindTooltip(`<span class="marker-label">${p.name}</span>`, { permanent: true, direction: "right", offset: [8, 0], className: "no-bg", opacity: 1 });
+});
+// strip tooltip chrome
+const style = document.createElement("style");
+style.textContent = ".no-bg{background:transparent;border:none;box-shadow:none;}.no-bg::before{display:none;}";
+document.head.appendChild(style);
+
+// Active-day layer
+let dayLayer = L.layerGroup().addTo(map);
+
+function curve(a, b) {
+  // ponytail: simple quadratic offset midpoint so ferry legs arc instead of overlap
+  const mid = [(a[0] + b[0]) / 2 + 0.12, (a[1] + b[1]) / 2 + 0.12];
+  const pts = [];
+  for (let t = 0; t <= 1; t += 0.05) {
+    pts.push([
+      (1-t)*(1-t)*a[0] + 2*(1-t)*t*mid[0] + t*t*b[0],
+      (1-t)*(1-t)*a[1] + 2*(1-t)*t*mid[1] + t*t*b[1],
+    ]);
+  }
+  return pts;
+}
+
+function showDay(i) {
+  document.querySelectorAll(".day").forEach((el, j) => el.classList.toggle("active", i === j));
+  dayLayer.clearLayers();
+  const d = DAYS[i];
+  // Dim everything not part of this day
+  backdropLines.forEach(l => l.setStyle({ opacity: 0.12 }));
+  Object.entries(baseMarkers).forEach(([key, m]) => {
+    const on = d.places.includes(key);
+    m.setStyle({ opacity: on ? 1 : 0.15, fillOpacity: on ? 1 : 0.15 });
+    const tt = m.getTooltip();
+    if (tt) tt.setOpacity(on ? 1 : 0.15);
+  });
+  d.legs.forEach(leg => {
+    const a = PLACES[leg.from].ll, b = PLACES[leg.to].ll;
+    if (leg.from === leg.to) return;
+    const line = leg.mode === "ferry" ? curve(a, b) : [a, b];
+    L.polyline(line, { color: MODE_COLOR[leg.mode], weight: 4, opacity: 0.9 })
+      .addTo(dayLayer).bindPopup(`<b>${leg.label}</b>`);
+  });
+  d.places.forEach(key => {
+    L.circleMarker(PLACES[key].ll, { radius: 8, color: "#fff", weight: 2, fillColor: "#ffb74d", fillOpacity: 1 }).addTo(dayLayer);
+  });
+  const bounds = L.latLngBounds(d.places.map(k => PLACES[k].ll));
+  map.flyToBounds(bounds.pad(0.4), { duration: 0.7, maxZoom: 12 });
+}
+
+// --- Lightbox ---
+const lightbox = document.getElementById("lightbox");
+lightbox.addEventListener("click", () => lightbox.style.display = "none");
+function openPhoto(src, alt) {
+  const img = lightbox.querySelector("img");
+  img.src = src; img.alt = alt;
+  lightbox.style.display = "flex";
+}
+
+// --- Sidebar ---
+const daysEl = document.getElementById("days");
+DAYS.forEach((d, i) => {
+  const el = document.createElement("div");
+  el.className = "day";
+  const strip = d.photos.map(([src, alt]) =>
+    `<img loading="lazy" src="${src}" alt="${alt}" title="${alt}">`).join("");
+  el.innerHTML = `
+    <div class="day-header"><span class="day-date">${d.date}</span><span class="day-stay">Stay: ${d.stay}</span></div>
+    <div class="day-title">${d.title}</div>
+    ${strip ? `<div class="photos">${strip}</div>` : ""}
+    <div class="day-body">${d.body}</div>`;
+  el.addEventListener("click", () => showDay(i));
+  el.querySelectorAll(".photos img").forEach(img => {
+    img.addEventListener("click", e => { e.stopPropagation(); openPhoto(img.src, img.alt); });
+  });
+  daysEl.appendChild(el);
+});
+
+showDay(0);
+</script>
+</body>
+</html>
