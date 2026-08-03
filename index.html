@@ -82,7 +82,7 @@
 <body>
 <div id="sidebar">
   <h1>Taiwan East Coast Loop</h1>
-  <div class="subtitle">Sep 29 – Oct 7 · Taipei → Jiufen → Taitung → Green Island ×2 → Yuli/Walami → Taipei</div>
+  <div class="subtitle">Sep 29 – Oct 7 · Taipei → Jiufen → Taitung → Green Island → Sanxiantai → Yuli/Walami → Taipei</div>
   <div class="legend">
     <span><i style="background:var(--bus)"></i> Bus</span>
     <span><i style="background:var(--train)"></i> Train</span>
@@ -91,8 +91,8 @@
   </div>
   <div id="days"></div>
   <div class="nights">
-    <b>Nights:</b> Taipei ×3 · Jiufen ×1 · Taitung ×1 · Green Island ×2 · Yuli ×1<br><br>
-    Hike, island rest valley, hike: Teapot Mountain on the way down, two unhurried Green Island days in the middle, Walami on the way back. No flights, no monster travel days.
+    <b>Nights:</b> Taipei ×3 · Jiufen ×1 · Taitung ×2 · Green Island ×1 · Yuli ×1<br><br>
+    Teapot Mountain on the way down, a tight Green Island overnight, Sanxiantai's eight-arch bridge on the coastal road north, Walami on the way back. No flights, no monster travel days.
     <div class="credit">Photos: Wikimedia Commons</div>
   </div>
 </div>
@@ -113,6 +113,7 @@ const PLACES = {
   taitung:    { name: "Taitung",           ll: [22.7583, 121.1444] },
   fugang:     { name: "Fugang Harbor",     ll: [22.7906, 121.1911] },
   green:      { name: "Green Island (Nanliao)", ll: [22.6737, 121.4907] },
+  sanxiantai: { name: "Sanxiantai",        ll: [23.1239, 121.4103] },
 };
 
 const MODE_COLOR = { bus: "#ffb74d", train: "#81c784", ferry: "#4fc3f7", hike: "#ef9a9a", taxi: "#ffb74d" };
@@ -197,7 +198,7 @@ const DAYS = [
       <div class="tip">This is the one long travel day of the trip — start the hike early so you can catch a mid-afternoon train. Book when reservations open, currently 28 days in advance.</div>`
   },
   {
-    date: "Oct 2", title: "Morning ferry to Green Island — coastal loop day", stay: "Green Island (Nanliao)",
+    date: "Oct 2", title: "Morning ferry to Green Island — the full loop", stay: "Green Island (Nanliao)",
     places: ["taitung", "fugang", "green"],
     legs: [
       { from: "taitung", to: "fugang", mode: "taxi", label: "Taxi to Fugang Harbor" },
@@ -211,66 +212,72 @@ const DAYS = [
     body: `
       <h4>Activities</h4>
       <ul>
-        <li>Morning ferry, check in, pick up the three prebooked <b>license-free micro electric two-wheelers</b></li>
-        <li>Coastal loop (~19 km, half a day done properly): Little Great Wall, Pekinese Dog &amp; Sleeping Beauty rocks, Guanyin Cave, lighthouse and its beach</li>
+        <li>Earliest ferry, check in, pick up the three prebooked <b>license-free micro electric two-wheelers</b></li>
+        <li>Coastal loop (~19 km): Little Great Wall, Pekinese Dog &amp; Sleeping Beauty rocks, Guanyin Cave, lighthouse and its beach</li>
         <li>Optional shore snorkeling at Shilanbi or Chaikou — shallow, guided, from the beach</li>
-        <li>Sunset viewpoint, wild sika deer and goats at dusk</li>
-        <li><b>Zhaori Hot Spring</b> night soak</li>
+        <li><b>White Terror Memorial Park</b> if energy allows — otherwise it's tomorrow morning's anchor</li>
+        <li>Sunset viewpoint, deer and goats at dusk, <b>Zhaori Hot Spring</b> night soak</li>
       </ul>
       <h4>Logistics</h4>
       <ul>
         <li>Taxi Taitung → Fugang Harbor, ferry to Nanliao (~50–60 min)</li>
         <li>Confirm in writing the vehicles are single-seat, license-free models — not ordinary electric scooters</li>
       </ul>
-      <div class="tip">Reserve a morning crossing — ferry schedules shift with tides and weather. Take only overnight bags; leave big luggage with the Taitung hotel (you will not pass back through for two days, so confirm they'll hold it).</div>`
+      <div class="tip">With one night, the earliest crossing matters — and these ferry dates looked tight on public calendars, so lock seats via the hotel's ferry package (they hold allocations) and keep Daily Air's 15-min Taitung flight as backup. Overnight bags only; big luggage stays at the Taitung hotel.</div>`
   },
   {
-    date: "Oct 3", title: "Slow Green Island day — memorial, trail, rest", stay: "Green Island (Nanliao)",
-    places: ["green"],
-    legs: [],
-    photos: [
-      [WM + "0/0f/Human_Rights_Memorial_Park_Lyudao.jpg/960px-Human_Rights_Memorial_Park_Lyudao.jpg", "Human Rights / White Terror Memorial Park"],
-      [WM + "c/ce/Lyudao_Dabaisha.jpg/960px-Lyudao_Dabaisha.jpg", "Dabaisha beach"],
-      [WM + "b/b5/Young_sika_deer_Green_Island_Taiwan.jpg/960px-Young_sika_deer_Green_Island_Taiwan.jpg", "Sika deer"],
-    ],
-    body: `
-      <h4>Deliberately empty — two anchors only</h4>
-      <ul>
-        <li>Sunrise soak at <b>Zhaori</b> for whoever wakes up (the famous session)</li>
-        <li>Long breakfast in Nanliao</li>
-        <li><b>White Terror Memorial Park</b> — the former political-prison complex; genuinely 2–3 hours and the most affecting thing on the island</li>
-        <li>Cross-island old trail (Guo Shan Gu Dao) — gentle 1.8 km through the interior, deer likely</li>
-        <li>Swim at Dabaisha, or just ride to a viewpoint at golden hour</li>
-      </ul>
-      <div class="tip">This is the rest valley between Teapot Mountain and Walami — nothing today is mandatory. If you get restless, tomorrow's escape valve: take the morning ferry instead of midday and gain a Taitung afternoon (Tiehua Village, seaside bikeway).</div>`
-  },
-  {
-    date: "Oct 4", title: "Ferry back → short hop to Yuli", stay: "Yuli",
-    places: ["green", "fugang", "taitung", "yuli"],
+    date: "Oct 3", title: "Sunrise soak, memorial → ferry back to Taitung", stay: "Taitung",
+    places: ["green", "fugang", "taitung"],
     legs: [
-      { from: "green", to: "fugang", mode: "ferry", label: "Ferry back to Fugang" },
-      { from: "fugang", to: "taitung", mode: "taxi", label: "Taxi to Taitung Station (via hotel for luggage)" },
-      { from: "taitung", to: "yuli", mode: "train", label: "TRA Taitung → Yuli ~40 min" },
+      { from: "green", to: "fugang", mode: "ferry", label: "Afternoon ferry back to Fugang" },
+      { from: "fugang", to: "taitung", mode: "taxi", label: "Taxi back to Taitung" },
     ],
     photos: [
-      [WM + "7/76/Taiwan_Fugang_Fishery_Harbor.JPG/960px-Taiwan_Fugang_Fishery_Harbor.JPG", "Fugang Fishery Harbor"],
       [WM + "e/e1/Zhaori_Hot_Springs_20150128.jpg/960px-Zhaori_Hot_Springs_20150128.jpg", "Zhaori Hot Springs at dawn"],
-      [WM + "5/52/TRA_DR2060_at_Taitung_Railway_Art_Village_20150727b.jpg/960px-TRA_DR2060_at_Taitung_Railway_Art_Village_20150727b.jpg", "Taitung Railway Art Village"],
+      [WM + "0/0f/Human_Rights_Memorial_Park_Lyudao.jpg/960px-Human_Rights_Memorial_Park_Lyudao.jpg", "Human Rights / White Terror Memorial Park"],
+      [WM + "b/b5/Young_sika_deer_Green_Island_Taiwan.jpg/960px-Young_sika_deer_Green_Island_Taiwan.jpg", "Sika deer"],
     ],
     body: `
       <h4>Morning</h4>
       <ul>
-        <li>Last swim, viewpoint, or the memorial if you saved it</li>
-        <li>Midday ferry back — or morning ferry for a free Taitung afternoon (decide on the day, no rebooking)</li>
+        <li>Sunrise soak at <b>Zhaori</b> — the famous session, worth the alarm</li>
+        <li>Long breakfast in Nanliao</li>
+        <li><b>White Terror Memorial Park</b> — the former political-prison complex, genuinely 2–3 hours and the most affecting thing on the island</li>
+        <li>Quick swim at Dabaisha or the cross-island old trail if time allows</li>
       </ul>
       <h4>Logistics</h4>
       <ul>
-        <li>Ferry Green Island → Fugang</li>
-        <li>Taxi via the Taitung hotel to collect stored luggage, then to the station</li>
-        <li>TRA Taitung → Yuli, ~40 min — the only onward commitment today</li>
+        <li>Afternoon ferry back to Fugang, taxi into Taitung</li>
+        <li>Same Taitung hotel as Oct 1 — luggage never moved</li>
+        <li>Relaxed evening: Tiehua Village live music, night market, seafront</li>
+      </ul>
+      <div class="tip">Book the afternoon return, not the last boat — if it's cancelled you have no slack. An earlier return just means more Tiehua time.</div>`
+  },
+  {
+    date: "Oct 4", title: "Sanxiantai coastal day → over the hills to Yuli", stay: "Yuli",
+    places: ["taitung", "sanxiantai", "yuli"],
+    legs: [
+      { from: "taitung", to: "sanxiantai", mode: "taxi", label: "Driver up coastal Highway 11 (~1.5 h)" },
+      { from: "sanxiantai", to: "yuli", mode: "taxi", label: "Highway 30 across the Coastal Range to Yuli (~1 h)" },
+    ],
+    photos: [
+      [WM + "d/d4/Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg/960px-Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg", "Sanxiantai eight-arch bridge"],
+      [WM + "d/de/Sansiantai_Bridge_02.jpg/960px-Sansiantai_Bridge_02.jpg", "Sanxiantai bridge and islet"],
+    ],
+    body: `
+      <h4>Activities</h4>
+      <ul>
+        <li><b>Sanxiantai</b> — the iconic eight-arch footbridge to a volcanic islet; cross it and walk the islet loop trail (~1.5–2 h)</li>
+        <li>Tide pools, coastal rock formations, and the Amis fishing town of Chenggong just south (good lunch stop, famous for mahi-mahi)</li>
+        <li>Scenic drive up coastal Highway 11, then Highway 30 through the Coastal Range tunnel into the rift valley</li>
         <li>Quiet evening in Yuli; noodles are the local specialty</li>
       </ul>
-      <div class="tip">This is why the return is stress-free: if the ferry runs late, you're catching a 40-minute local train, not a flight. Trains run all evening.</div>`
+      <h4>Logistics</h4>
+      <ul>
+        <li>Hire a driver for the day: Taitung → Sanxiantai → Yuli one-way (~3 h driving total) — with three people this beats juggling coastal buses</li>
+        <li>Fallback without a driver: Dingdong coastal bus to Sanxiantai, bus back, then train Taitung → Yuli (~40 min) — doable but eats the afternoon</li>
+      </ul>
+      <div class="tip">Ask the Taitung hotel to arrange the driver a day or two ahead. Highway 30 lands you practically at Yuli's door — it's the same rift valley the Walami trailhead sits in.</div>`
   },
   {
     date: "Oct 5", title: "Walami Trail → afternoon train to Taipei", stay: "Taipei",
@@ -340,7 +347,8 @@ const FULL_ROUTE = [
   ["taipei", "jiufen", "bus"], ["jiufen", "ruifang", "bus"],
   ["ruifang", "hualien", "train"], ["hualien", "taitung", "train"],
   ["taitung", "fugang", "taxi"], ["fugang", "green", "ferry"],
-  ["taitung", "yuli", "train"], ["yuli", "hualien", "train"],
+  ["taitung", "sanxiantai", "taxi"], ["sanxiantai", "yuli", "taxi"],
+  ["yuli", "hualien", "train"],
 ];
 const backdropLines = FULL_ROUTE.map(([a, b, mode]) =>
   L.polyline([PLACES[a].ll, PLACES[b].ll], { color: "#5a6b7c", weight: 2, opacity: 0.5, dashArray: mode === "ferry" ? "6 6" : null }).addTo(map)
