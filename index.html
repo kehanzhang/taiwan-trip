@@ -13,10 +13,8 @@
     --text: #e8edf2;
     --muted: #8fa1b3;
     --accent: #4fc3f7;
-    --bus: #ffb74d;
-    --train: #81c784;
+    --drive: #ffb74d;
     --ferry: #4fc3f7;
-    --flight: #ce93d8;
     --hike: #ef9a9a;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -82,17 +80,16 @@
 <body>
 <div id="sidebar">
   <h1>Taiwan East Coast Loop</h1>
-  <div class="subtitle">Sep 29 – Oct 7 · Taipei → Jiufen → Taitung → Green Island → Sanxiantai → Yuli/Walami → Taipei</div>
+  <div class="subtitle">Sep 29 – Oct 7 · Self-drive loop · Taipei → Jiufen daytrip → Taitung → Green Island → Sanxiantai → Yuli/Walami → Taipei</div>
   <div class="legend">
-    <span><i style="background:var(--bus)"></i> Bus</span>
-    <span><i style="background:var(--train)"></i> Train</span>
+    <span><i style="background:var(--drive)"></i> Drive</span>
     <span><i style="background:var(--ferry)"></i> Ferry</span>
     <span><i style="background:var(--hike)"></i> Hike</span>
   </div>
   <div id="days"></div>
   <div class="nights">
-    <b>Nights:</b> Taipei ×3 · Jiufen ×1 · Taitung ×2 · Green Island ×1 · Yuli ×1<br><br>
-    Teapot Mountain on the way down, a tight Green Island overnight, Sanxiantai's eight-arch bridge on the coastal road north, Walami on the way back. No flights, no monster travel days.
+    <b>Nights:</b> Taipei ×4 (Regent Taipei Sep 29–Oct 1, then 2 nights at the end) · Taitung ×2 · Green Island ×1 · Yuli ×1<br><br>
+    One rental car for the whole loop, luggage lives in the trunk. Jiufen and Teapot Mountain as an afternoon-to-dusk daytrip, a tight Green Island overnight, Sanxiantai on the coastal road, Walami on the way back.
     <div class="credit">Photos: Wikimedia Commons</div>
   </div>
 </div>
@@ -102,11 +99,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const PLACES = {
-  taipei:     { name: "Taipei",            ll: [25.0478, 121.5170] },
+  taipei:     { name: "Taipei (Regent)",   ll: [25.0478, 121.5170] },
   jiufen:     { name: "Jiufen",            ll: [25.1097, 121.8442] },
   jinguashi:  { name: "Jinguashi",         ll: [25.1078, 121.8578] },
   teapot:     { name: "Teapot Mountain",   ll: [25.1042, 121.8664] },
-  ruifang:    { name: "Ruifang Station",   ll: [25.1088, 121.8060] },
+  qingshui:   { name: "Qingshui Cliffs",   ll: [24.2119, 121.6733] },
   hualien:    { name: "Hualien",           ll: [23.9930, 121.6011] },
   yuli:       { name: "Yuli",              ll: [23.3319, 121.3117] },
   walami:     { name: "Walami Trailhead",  ll: [23.3405, 121.4103] },
@@ -116,13 +113,13 @@ const PLACES = {
   sanxiantai: { name: "Sanxiantai",        ll: [23.1239, 121.4103] },
 };
 
-const MODE_COLOR = { bus: "#ffb74d", train: "#81c784", ferry: "#4fc3f7", hike: "#ef9a9a", taxi: "#ffb74d" };
+const MODE_COLOR = { drive: "#ffb74d", ferry: "#4fc3f7", hike: "#ef9a9a" };
 
 const WM = "https://upload.wikimedia.org/wikipedia/commons/thumb/";
 
 const DAYS = [
   {
-    date: "Sep 29", title: "Arrive Taipei — artsy evening & night market", stay: "Taipei",
+    date: "Sep 29", title: "Arrive Taipei — artsy evening & night market", stay: "Regent Taipei",
     places: ["taipei"],
     legs: [],
     photos: [
@@ -133,75 +130,73 @@ const DAYS = [
     body: `
       <h4>Activities</h4>
       <ul>
-        <li>Arrive and settle in</li>
-        <li>Easy artsy neighborhood evening: Zhongshan, Dadaocheng, Huashan 1914, or Songshan Cultural Park</li>
+        <li>Arrive, check in at the <b>Regent Taipei</b> — you're already in Zhongshan, the artsy neighborhood</li>
+        <li>Evening wander: Zhongshan's lanes, Dadaocheng, or Huashan 1914</li>
         <li>Night market or casual food crawl</li>
       </ul>
-      <div class="tip">No car needed. Stay near Taipei Main Station, Zhongshan, or Ximen for an easy departure toward Jiufen.</div>`
+      <div class="tip">Pick up the rental car today or tomorrow morning — you'll want it by lunchtime on the 30th. Each driver needs an International Driving Permit from home plus license and passport. The Regent has valet/garage parking.</div>`
   },
   {
-    date: "Sep 30", title: "Taipei → Jiufen — old street & tea houses", stay: "Jiufen",
-    places: ["taipei", "jiufen"],
-    legs: [{ from: "taipei", to: "jiufen", mode: "bus", label: "Bus 965 (Ximen/Beimen → Jiufen)" }],
+    date: "Sep 30", title: "Jiufen & Teapot Mountain daytrip — streets, dusk hike, dinner", stay: "Regent Taipei",
+    places: ["taipei", "jiufen", "jinguashi", "teapot"],
+    legs: [
+      { from: "taipei", to: "jiufen", mode: "drive", label: "Drive Taipei → Jiufen ~1h–1h15" },
+      { from: "jiufen", to: "jinguashi", mode: "drive", label: "Short hop to Jinguashi trailhead" },
+      { from: "jinguashi", to: "teapot", mode: "hike", label: "Teapot Mountain — dusk hike" },
+    ],
     photos: [
       [WM + "c/cb/Jiufen%2C_November_28%2C_2024_-_019.jpg/960px-Jiufen%2C_November_28%2C_2024_-_019.jpg", "Jiufen hillside"],
+      [WM + "e/e6/Teapot_mountain_pano.png/960px-Teapot_mountain_pano.png", "Teapot Mountain panorama"],
       [WM + "f/f0/Shengping_Theater%2C_Jiufen%2C_New_Taipei%2C_Feb_2025.jpg/960px-Shengping_Theater%2C_Jiufen%2C_New_Taipei%2C_Feb_2025.jpg", "Shengping Theater"],
       [WM + "a/ad/A-Zhu_Peanut_Ice_Cream_Roll%2C_Jiufen_Old_Street%2C_2024.jpg/960px-A-Zhu_Peanut_Ice_Cream_Roll%2C_Jiufen_Old_Street%2C_2024.jpg", "Peanut ice cream roll, Jiufen Old Street"],
     ],
     body: `
-      <h4>Activities</h4>
+      <h4>Schedule</h4>
       <ul>
-        <li>Slow afternoon around Jiufen Old Street</li>
-        <li>Tea house, hillside alleys, Shengping Theater and viewpoints</li>
-        <li>Experience Jiufen after most day-trippers leave</li>
+        <li><b>~2:00 pm</b> — leave Taipei after lunch, drive ~1h–1h15</li>
+        <li><b>~3:15–4:00 pm</b> — Jiufen Old Street: hillside alleys, Shengping Theater, snacks</li>
+        <li><b>~4:15 pm</b> — drive 10 min over to Jinguashi, hike <b>Teapot Mountain</b> till dusk — golden hour over the Yin-Yang Sea is the best light of the day (sunset ~5:40 pm in early October)</li>
+        <li><b>Evening</b> — back to Jiufen for dinner and a tea house after the day-trippers have gone; the lantern-lit streets at night are the whole point</li>
+        <li>Drive back whenever — no schedule</li>
       </ul>
-      <h4>Logistics</h4>
+      <h4>Parking</h4>
       <ul>
-        <li>Simplest: direct 965 bus from the Ximen/Beimen area</li>
-        <li>Alternative: TRA train to Ruifang, then local bus or taxi uphill</li>
+        <li>Day lots run ~NT$100/visit: City Car Travel (ex-Taiyang, spacious, ~15 min walk + stairs) or the lots near Daitian Temple (~8 min walk)</li>
+        <li>Evening parking is easy once day-trippers clear out; spaces near the Old Street open up</li>
       </ul>
-      <div class="tip">The 965 route connects Taipei, Ruifang, Jiufen and Jinguashi, including the Gold Museum area. Leave luggage at the Jiufen hotel tomorrow morning while hiking.</div>`
+      <div class="tip">Two hours on the Old Street before 4 pm will be shoulder-to-shoulder — treat the afternoon pass as a preview and save the atmosphere for dinner, when you'll have the lanes nearly to yourselves. Bring headlamps or phone lights for the last stretch of the descent if you push sunset on Teapot.</div>`
   },
   {
-    date: "Oct 1", title: "Jinguashi hiking day → long train to Taitung", stay: "Taitung",
-    places: ["jiufen", "jinguashi", "teapot", "ruifang", "hualien", "taitung"],
+    date: "Oct 1", title: "Slow drive south — cliffs, coast, option Sanxiantai", stay: "Taitung",
+    places: ["taipei", "qingshui", "hualien", "sanxiantai", "taitung"],
     legs: [
-      { from: "jiufen", to: "jinguashi", mode: "bus", label: "Bus/taxi Jiufen → Jinguashi" },
-      { from: "jinguashi", to: "teapot", mode: "hike", label: "Teapot Mountain hike" },
-      { from: "jiufen", to: "ruifang", mode: "bus", label: "Bus/taxi down to Ruifang" },
-      { from: "ruifang", to: "hualien", mode: "train", label: "TRA south (change in Hualien if needed)" },
-      { from: "hualien", to: "taitung", mode: "train", label: "TRA Hualien → Taitung" },
+      { from: "taipei", to: "qingshui", mode: "drive", label: "Hwy 9 / improved Suhua — mostly modern tunnels" },
+      { from: "qingshui", to: "hualien", mode: "drive", label: "Qingshui Cliffs → Hualien (lunch)" },
+      { from: "hualien", to: "sanxiantai", mode: "drive", label: "Coastal Hwy 11 south — optional Sanxiantai stop" },
+      { from: "sanxiantai", to: "taitung", mode: "drive", label: "Hwy 11 down to Taitung" },
     ],
     photos: [
-      [WM + "e/e6/Teapot_mountain_pano.png/960px-Teapot_mountain_pano.png", "Teapot Mountain panorama"],
-      [WM + "a/a1/Golden_Waterfall_20200316_01.jpg/960px-Golden_Waterfall_20200316_01.jpg", "Golden Waterfall"],
+      [WM + "d/d4/Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg/960px-Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg", "Sanxiantai eight-arch bridge"],
       [WM + "8/88/Tiehua_Village_marker.jpg/960px-Tiehua_Village_marker.jpg", "Tiehua Village, Taitung"],
+      [WM + "5/52/TRA_DR2060_at_Taitung_Railway_Art_Village_20150727b.jpg/960px-TRA_DR2060_at_Taitung_Railway_Art_Village_20150727b.jpg", "Taitung Railway Art Village"],
     ],
     body: `
-      <h4>Primary hike</h4>
+      <h4>A slow day down the coast (~6 h moving time, spread out)</h4>
       <ul>
-        <li><b>Teapot Mountain</b> — overlooks Jinguashi and the Yin-Yang Sea</li>
-        <li>Optional extension toward Banping Mountain if weather and timing are good</li>
-        <li>Optional short Baoshi Mountain viewpoint trail</li>
+        <li>Check out of the Regent, leave by ~9–10 am — no hike today, just the drive</li>
+        <li><b>Qingshui Cliffs</b> viewpoint stop — the payoff of driving this coast yourself</li>
+        <li>Lunch in Hualien</li>
+        <li>Coastal <b>Hwy 11</b> south, stopping wherever looks good</li>
+        <li><b>Option: Sanxiantai</b> — the eight-arch footbridge and islet loop (~1.5–2 h). Do it today if you're making good time; otherwise it keeps for Oct 4</li>
+        <li>Evening: Tiehua Village live music, Taitung night market</li>
       </ul>
-      <h4>Nearby</h4>
-      <ul>
-        <li>Gold Museum · Qitang Old Street · Golden Waterfall · Yin-Yang Sea and the old mining landscape</li>
-      </ul>
-      <h4>Logistics</h4>
-      <ul>
-        <li>Bus or taxi Jiufen → Jinguashi, hike and explore</li>
-        <li>Return to Jiufen for luggage, then down to Ruifang Station</li>
-        <li>Reserved TRA train all the way to Taitung (~4.5–5 h; change in Hualien only if the selected train requires it)</li>
-        <li>Late dinner around Tiehua / Taitung night market</li>
-      </ul>
-      <div class="tip">This is the one long travel day of the trip — start the hike early so you can catch a mid-afternoon train. Book when reservations open, currently 28 days in advance.</div>`
+      <div class="tip">Rotate drivers and don't rush — the point of the car is stopping. If you do Sanxiantai today, Oct 4 becomes a short direct hop to Yuli with a free afternoon. Aim to be off the road before dark either way.</div>`
   },
   {
     date: "Oct 2", title: "Morning ferry to Green Island — the full loop", stay: "Green Island (Nanliao)",
     places: ["taitung", "fugang", "green"],
     legs: [
-      { from: "taitung", to: "fugang", mode: "taxi", label: "Taxi to Fugang Harbor" },
+      { from: "taitung", to: "fugang", mode: "drive", label: "Drive to Fugang Harbor, park the car" },
       { from: "fugang", to: "green", mode: "ferry", label: "Ferry ~50–60 min" },
     ],
     photos: [
@@ -220,17 +215,17 @@ const DAYS = [
       </ul>
       <h4>Logistics</h4>
       <ul>
-        <li>Taxi Taitung → Fugang Harbor, ferry to Nanliao (~50–60 min)</li>
+        <li>Park at Fugang Harbor's paid lot (~NT$150–250/day) — big luggage just stays in the trunk</li>
         <li>Confirm in writing the vehicles are single-seat, license-free models — not ordinary electric scooters</li>
       </ul>
-      <div class="tip">With one night, the earliest crossing matters — and these ferry dates looked tight on public calendars, so lock seats via the hotel's ferry package (they hold allocations) and keep Daily Air's 15-min Taitung flight as backup. Overnight bags only; big luggage stays at the Taitung hotel.</div>`
+      <div class="tip">With one night, the earliest crossing matters — and these ferry dates looked tight on public calendars, so lock seats via the hotel's ferry package (they hold allocations) and keep Daily Air's 15-min Taitung flight as backup. Overnight bags only.</div>`
   },
   {
     date: "Oct 3", title: "Sunrise soak, memorial → ferry back to Taitung", stay: "Taitung",
     places: ["green", "fugang", "taitung"],
     legs: [
       { from: "green", to: "fugang", mode: "ferry", label: "Afternoon ferry back to Fugang" },
-      { from: "fugang", to: "taitung", mode: "taxi", label: "Taxi back to Taitung" },
+      { from: "fugang", to: "taitung", mode: "drive", label: "Collect the car, drive into Taitung" },
     ],
     photos: [
       [WM + "e/e1/Zhaori_Hot_Springs_20150128.jpg/960px-Zhaori_Hot_Springs_20150128.jpg", "Zhaori Hot Springs at dawn"],
@@ -247,18 +242,17 @@ const DAYS = [
       </ul>
       <h4>Logistics</h4>
       <ul>
-        <li>Afternoon ferry back to Fugang, taxi into Taitung</li>
-        <li>Same Taitung hotel as Oct 1 — luggage never moved</li>
+        <li>Afternoon ferry back to Fugang, collect the car</li>
         <li>Relaxed evening: Tiehua Village live music, night market, seafront</li>
       </ul>
       <div class="tip">Book the afternoon return, not the last boat — if it's cancelled you have no slack. An earlier return just means more Tiehua time.</div>`
   },
   {
-    date: "Oct 4", title: "Sanxiantai coastal day → over the hills to Yuli", stay: "Yuli",
+    date: "Oct 4", title: "Sanxiantai (if not done Oct 1) → over the hills to Yuli", stay: "Yuli",
     places: ["taitung", "sanxiantai", "yuli"],
     legs: [
-      { from: "taitung", to: "sanxiantai", mode: "taxi", label: "Driver up coastal Highway 11 (~1.5 h)" },
-      { from: "sanxiantai", to: "yuli", mode: "taxi", label: "Highway 30 across the Coastal Range to Yuli (~1 h)" },
+      { from: "taitung", to: "sanxiantai", mode: "drive", label: "Coastal Hwy 11 north (~1.5 h, stop anywhere)" },
+      { from: "sanxiantai", to: "yuli", mode: "drive", label: "Hwy 30 across the Coastal Range (~1 h)" },
     ],
     photos: [
       [WM + "d/d4/Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg/960px-Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg", "Sanxiantai eight-arch bridge"],
@@ -267,25 +261,21 @@ const DAYS = [
     body: `
       <h4>Activities</h4>
       <ul>
+        <li>Drive up coastal Highway 11 at your own pace — a dozen small viewpoints and beaches between Taitung and Chenggong; stop wherever looks good</li>
         <li><b>Sanxiantai</b> — the iconic eight-arch footbridge to a volcanic islet; cross it and walk the islet loop trail (~1.5–2 h)</li>
-        <li>Tide pools, coastal rock formations, and the Amis fishing town of Chenggong just south (good lunch stop, famous for mahi-mahi)</li>
-        <li>Scenic drive up coastal Highway 11, then Highway 30 through the Coastal Range tunnel into the rift valley</li>
+        <li>Tide pools, coastal rock formations, lunch in the Amis fishing town of Chenggong (famous for mahi-mahi)</li>
+        <li>Highway 30 through the Coastal Range tunnel into the rift valley — lands practically at Yuli's door</li>
         <li>Quiet evening in Yuli; noodles are the local specialty</li>
       </ul>
-      <h4>Logistics</h4>
-      <ul>
-        <li>Hire a driver for the day: Taitung → Sanxiantai → Yuli one-way (~3 h driving total) — with three people this beats juggling coastal buses</li>
-        <li>Fallback without a driver: Dingdong coastal bus to Sanxiantai, bus back, then train Taitung → Yuli (~40 min) — doable but eats the afternoon</li>
-      </ul>
-      <div class="tip">Ask the Taitung hotel to arrange the driver a day or two ahead. Highway 30 lands you practically at Yuli's door — it's the same rift valley the Walami trailhead sits in.</div>`
+      <div class="tip">Under 3 h of total driving, all scenic, total stopping freedom. Already did Sanxiantai on Oct 1? Then today is a direct ~1.5 h hop to Yuli via the rift valley — sleep in, revisit Tiehua, or detour to Luye's highlands instead. Yuli guesthouses have easy parking.</div>`
   },
   {
-    date: "Oct 5", title: "Walami Trail → afternoon train to Taipei", stay: "Taipei",
+    date: "Oct 5", title: "Walami Trail → drive north to Taipei", stay: "Taipei",
     places: ["yuli", "walami", "hualien", "taipei"],
     legs: [
-      { from: "yuli", to: "walami", mode: "taxi", label: "Prearranged taxi to trailhead & back" },
-      { from: "yuli", to: "hualien", mode: "train", label: "TRA Yuli → Hualien" },
-      { from: "hualien", to: "taipei", mode: "train", label: "TRA Hualien → Taipei (~3.5–4 h total)" },
+      { from: "yuli", to: "walami", mode: "drive", label: "Drive to the trailhead (~30 min)" },
+      { from: "yuli", to: "hualien", mode: "drive", label: "Rift valley north" },
+      { from: "hualien", to: "taipei", mode: "drive", label: "Suhua Hwy 9 back to Taipei (~4.5 h total)" },
     ],
     photos: [
       [WM + "c/c7/Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio.jpg/960px-Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio.jpg", "Walami Trail"],
@@ -294,17 +284,16 @@ const DAYS = [
     body: `
       <h4>Primary hike</h4>
       <ul>
-        <li><b>Walami Trail</b> — trailhead toward Shanfeng Waterfall / Jiaxin</li>
-        <li>Jungle, suspension bridges, river valley and mountain scenery</li>
+        <li><b>Walami Trail</b> — drive to the trailhead yourselves, start early</li>
+        <li>Jungle, suspension bridges, river valley and mountain scenery toward Shanfeng Waterfall / Jiaxin</li>
         <li>Best practical substitute for the classic Taroko hiking experience</li>
       </ul>
-      <div class="tip">The lower recreational section is relatively gentle — fine the morning after a beach day; permits are required only beyond the Jiaxin / 7 km boundary.</div>
+      <div class="tip">The lower recreational section is relatively gentle; permits are required only beyond the Jiaxin / 7 km boundary.</div>
       <h4>Logistics</h4>
       <ul>
-        <li>Prearrange a taxi or local driver Yuli ⇄ Walami trailhead (ask the Yuli hotel)</li>
-        <li>Hotel holds luggage during the hike — same trick as Jiufen</li>
-        <li>Afternoon reserved train north, ~3.5–4 h (direct or change in Hualien)</li>
-        <li>Arrive Taipei in time for a night market dinner</li>
+        <li>Hike in the morning, lunch in Yuli, then ~4.5 h north — rotate drivers, the fresh one takes the Suhua stretch</li>
+        <li>Aim to be off the highway before dark; arrive Taipei in time for a night market dinner</li>
+        <li>Return the car this evening, or keep it till departure if the Taipei hotel's parking is cheap</li>
       </ul>`
   },
   {
@@ -325,14 +314,14 @@ const DAYS = [
         <li>Taipei 101 or Elephant Mountain — sunset from Elephant Mountain pairs well with 101</li>
         <li>Final night market run</li>
       </ul>
-      <div class="tip">Beitou onsen is possible today, but Zhaori already gave you the more distinctive hot-spring experience. Nothing today needs advance booking, so this day also absorbs any overflow from the trip.</div>`
+      <div class="tip">No car needed today — MRT everything. Beitou onsen is possible, but Zhaori already gave you the more distinctive hot-spring experience.</div>`
   },
   {
     date: "Oct 7", title: "Departure", stay: "—",
     places: ["taipei"],
     legs: [],
     photos: [],
-    body: `<ul><li>Depart Taiwan. With a full Taipei day behind you, no need to cram anything this morning.</li></ul>`
+    body: `<ul><li>Depart Taiwan. If you kept the car, drop it at the airport branch on the way out.</li></ul>`
   },
 ];
 
@@ -344,11 +333,12 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
 
 // Full-route backdrop (always visible, faint)
 const FULL_ROUTE = [
-  ["taipei", "jiufen", "bus"], ["jiufen", "ruifang", "bus"],
-  ["ruifang", "hualien", "train"], ["hualien", "taitung", "train"],
-  ["taitung", "fugang", "taxi"], ["fugang", "green", "ferry"],
-  ["taitung", "sanxiantai", "taxi"], ["sanxiantai", "yuli", "taxi"],
-  ["yuli", "hualien", "train"],
+  ["taipei", "jiufen", "drive"], ["jiufen", "jinguashi", "drive"],
+  ["taipei", "qingshui", "drive"], ["qingshui", "hualien", "drive"],
+  ["hualien", "taitung", "drive"], ["taitung", "fugang", "drive"],
+  ["fugang", "green", "ferry"],
+  ["taitung", "sanxiantai", "drive"], ["sanxiantai", "yuli", "drive"],
+  ["yuli", "hualien", "drive"],
 ];
 const backdropLines = FULL_ROUTE.map(([a, b, mode]) =>
   L.polyline([PLACES[a].ll, PLACES[b].ll], { color: "#5a6b7c", weight: 2, opacity: 0.5, dashArray: mode === "ferry" ? "6 6" : null }).addTo(map)
