@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Taiwan East Coast Loop — Sep 29 to Oct 7</title>
+<title>Taiwan East Coast Loop — Sep 29 to Oct 8</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root {
@@ -80,7 +80,7 @@
 <body>
 <div id="sidebar">
   <h1>Taiwan East Coast Loop</h1>
-  <div class="subtitle">Sep 29 – Oct 7 · Self-drive loop · Taipei → Jiufen daytrip → Taitung → Green Island → Yuli base (Walami &amp; Sanxiantai) → Taipei</div>
+  <div class="subtitle">Sep 29 – Oct 8 · Self-drive loop · Taipei → Jiufen daytrip → Taitung → Green Island → Yuli base (Walami &amp; Sanxiantai) → Taipei</div>
   <div class="legend">
     <span><i style="background:var(--drive)"></i> Drive</span>
     <span><i style="background:var(--ferry)"></i> Ferry</span>
@@ -88,7 +88,7 @@
   </div>
   <div id="days"></div>
   <div class="nights">
-    <b>Nights:</b> Taipei ×4 (Regent Taipei Sep 29–Oct 1, then 2 nights at the end) · Taitung ×1 (Flora B&B 芙蘿拉萃旅) · Green Island ×1 (Lang Lang Retreat 浪浪別館) · Yuli ×2 (Wisdom Garden)<br><br>
+    <b>Nights:</b> Taipei ×5 (Regent Taipei Sep 29–Oct 1 · Jianming Li rental, Datong Oct 5–8) · Taitung ×1 (Flora B&B 芙蘿拉萃旅) · Green Island ×1 (Lang Lang Retreat 浪浪別館) · Yuli ×2 (Wisdom Garden)<br><br>
     One rental car for the whole loop, luggage lives in the trunk. Jiufen and Teapot Mountain as an afternoon-to-dusk daytrip, a tight Green Island overnight, then a two-night Yuli base with Walami and Sanxiantai flexed by weather.
     <div class="credit">Photos: Wikimedia Commons</div>
   </div>
@@ -273,7 +273,7 @@ const DAYS = [
       <div class="tip">Ideal split: Sanxiantai on Oct 3's drive in (or today), Walami today (or tomorrow before the drive north). Wisdom Garden is the two-night base — no repacking between hikes.</div>`
   },
   {
-    date: "Oct 5", title: "Morning flex (Walami if not done) → drive north to Taipei", stay: "Taipei",
+    date: "Oct 5", title: "Morning flex (Walami if not done) → drive north to Taipei", stay: "Jianming Li rental, Datong",
     places: ["yuli", "walami", "hualien", "taipei"],
     legs: [
       { from: "yuli", to: "walami", mode: "drive", label: "Morning Walami if it's still pending" },
@@ -290,12 +290,12 @@ const DAYS = [
         <li>If Walami is still pending: early start, hike the morning, lunch in Yuli, wheels north by ~1 pm</li>
         <li>If both anchors are done: sleep in, Antong Hot Springs or a rift-valley stop, leave whenever</li>
         <li>~4.5 h to Taipei — rotate drivers, the fresh one takes the Suhua stretch; Qingshui Cliffs pull-off again if you want the view from the other direction</li>
-        <li>Aim to be off the highway before dark; arrive in time for a night market dinner</li>
-        <li>Return the car this evening, or keep it till departure if the Taipei hotel's parking is cheap</li>
+        <li>Aim to be off the highway before dark; the rental unit is in <b>Jianming Li, Datong</b> — Ningxia Night Market is a short walk for dinner</li>
+        <li>Return the car this evening — Datong street parking is metered and scarce, and the rest of the trip is MRT/walking territory</li>
       </ul>`
   },
   {
-    date: "Oct 6", title: "Full Taipei day — landmarks, culture & food", stay: "Taipei",
+    date: "Oct 6", title: "Full Taipei day — landmarks, culture & food", stay: "Jianming Li rental, Datong",
     places: ["taipei"],
     legs: [],
     photos: [
@@ -306,20 +306,40 @@ const DAYS = [
     body: `
       <h4>Activities</h4>
       <ul>
-        <li>Dihua Street and Dadaocheng in the morning</li>
+        <li>Dihua Street and Dadaocheng — a stroll from the rental, start here</li>
         <li>Huashan 1914 Creative Park, museum or gallery</li>
         <li>Chiang Kai-shek Memorial Hall</li>
         <li>Taipei 101 or Elephant Mountain — sunset from Elephant Mountain pairs well with 101</li>
-        <li>Final night market run</li>
+        <li>Night market run</li>
       </ul>
       <div class="tip">No car needed today — MRT everything. Beitou onsen is possible, but Zhaori already gave you the more distinctive hot-spring experience.</div>`
   },
   {
-    date: "Oct 7", title: "Departure", stay: "—",
+    date: "Oct 7", title: "Second full Taipei day — whatever's left", stay: "Jianming Li rental, Datong",
+    places: ["taipei"],
+    legs: [],
+    photos: [
+      [WM + "5/52/Shilin_Night_Market_02.jpg/960px-Shilin_Night_Market_02.jpg", "Shilin Night Market"],
+      [WM + "a/a1/Huashan_1914_Creative_Park_Chuan_Ching_Stage_2015.jpg/960px-Huashan_1914_Creative_Park_Chuan_Ching_Stage_2015.jpg", "Huashan 1914 Creative Park"],
+      [WM + "b/b0/Taipei_Taiwan_Zhongshan-Hall-01.jpg/960px-Taipei_Taiwan_Zhongshan-Hall-01.jpg", "Zhongshan Hall"],
+    ],
+    body: `
+      <h4>Open day — pick what the trip still owes you</h4>
+      <ul>
+        <li>Beitou hot springs or a Yangmingshan half-day if you want one more dose of nature</li>
+        <li>Maokong gondola and tea houses above the city</li>
+        <li>National Palace Museum if the culture itch remains</li>
+        <li>Souvenir sweep: pineapple cakes, tea, Dihua Street dry goods</li>
+        <li>Final night market — Shilin or Raohe if Ningxia's already conquered</li>
+      </ul>
+      <div class="tip">Deliberately unplanned — it's the trip's absorber. Anything that got rained out, cut short, or skipped lands here.</div>`
+  },
+  {
+    date: "Oct 8", title: "Departure", stay: "—",
     places: ["taipei"],
     legs: [],
     photos: [],
-    body: `<ul><li>Depart Taiwan. If you kept the car, drop it at the airport branch on the way out.</li></ul>`
+    body: `<ul><li>Check out of the rental and depart Taiwan. Airport MRT from Taipei Main Station is ~10 min from the flat.</li></ul>`
   },
 ];
 
