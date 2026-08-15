@@ -80,7 +80,7 @@
 <body>
 <div id="sidebar">
   <h1>Taiwan East Coast Loop</h1>
-  <div class="subtitle">Sep 29 – Oct 7 · Self-drive loop · Taipei → Jiufen daytrip → Taitung → Green Island → Sanxiantai → Yuli/Walami → Taipei</div>
+  <div class="subtitle">Sep 29 – Oct 7 · Self-drive loop · Taipei → Jiufen daytrip → Taitung → Green Island → Yuli base (Walami &amp; Sanxiantai) → Taipei</div>
   <div class="legend">
     <span><i style="background:var(--drive)"></i> Drive</span>
     <span><i style="background:var(--ferry)"></i> Ferry</span>
@@ -88,8 +88,8 @@
   </div>
   <div id="days"></div>
   <div class="nights">
-    <b>Nights:</b> Taipei ×4 (Regent Taipei Sep 29–Oct 1, then 2 nights at the end) · Taitung ×2 (Oct 1 at Flora B&B 芙蘿拉萃旅) · Green Island ×1 (Lang Lang Retreat 浪浪別館) · Yuli ×1<br><br>
-    One rental car for the whole loop, luggage lives in the trunk. Jiufen and Teapot Mountain as an afternoon-to-dusk daytrip, a tight Green Island overnight, Sanxiantai on the coastal road, Walami on the way back.
+    <b>Nights:</b> Taipei ×4 (Regent Taipei Sep 29–Oct 1, then 2 nights at the end) · Taitung ×1 (Flora B&B 芙蘿拉萃旅) · Green Island ×1 (Lang Lang Retreat 浪浪別館) · Yuli ×2 (Wisdom Garden)<br><br>
+    One rental car for the whole loop, luggage lives in the trunk. Jiufen and Teapot Mountain as an afternoon-to-dusk daytrip, a tight Green Island overnight, then a two-night Yuli base with Walami and Sanxiantai flexed by weather.
     <div class="credit">Photos: Wikimedia Commons</div>
   </div>
 </div>
@@ -187,10 +187,10 @@ const DAYS = [
         <li><b>Qingshui Cliffs</b> viewpoint stop — the payoff of driving this coast yourself</li>
         <li>Lunch in Hualien</li>
         <li>Coastal <b>Hwy 11</b> south, stopping wherever looks good</li>
-        <li><b>Option: Sanxiantai</b> — the eight-arch footbridge and islet loop (~1.5–2 h). Do it today if you're making good time; otherwise it keeps for Oct 4</li>
+        <li><b>Option: Sanxiantai</b> — the eight-arch footbridge and islet loop (~1.5–2 h). Do it today if you're making good time; otherwise it slots into the Yuli flex days (Oct 3–5)</li>
         <li>Evening: Tiehua Village live music, Taitung night market</li>
       </ul>
-      <div class="tip">Rotate drivers and don't rush — the point of the car is stopping. If you do Sanxiantai today, Oct 4 becomes a short direct hop to Yuli with a free afternoon. Aim to be off the road before dark either way. Flora B&B is near Taitung Station with free private parking out front; Tiehua is ~10 min away by car.</div>`
+      <div class="tip">Rotate drivers and don't rush — the point of the car is stopping. Anything skipped today slots into the Yuli flex days. Aim to be off the road before dark either way. Flora B&B is near Taitung Station with free private parking out front; Tiehua is ~10 min away by car.</div>`
   },
   {
     date: "Oct 2", title: "Morning ferry to Green Island — the full loop", stay: "Lang Lang Retreat 浪浪別館, Wenquan",
@@ -222,11 +222,12 @@ const DAYS = [
       <div class="tip">These ferry dates looked tight on public calendars, so lock the 9 am out / noon back seats via the hotel's ferry package (they hold allocations) and keep Daily Air's 15-min Taitung flight as backup. Overnight bags only.</div>`
   },
   {
-    date: "Oct 3", title: "Sunrise soak, memorial → noon ferry, free Taitung afternoon", stay: "Taitung",
-    places: ["green", "fugang", "taitung"],
+    date: "Oct 3", title: "Sunrise soak, memorial → noon ferry → drive to Yuli", stay: "Wisdom Garden, Yuli",
+    places: ["green", "fugang", "taitung", "sanxiantai", "yuli"],
     legs: [
       { from: "green", to: "fugang", mode: "ferry", label: "Noon ferry back to Fugang" },
-      { from: "fugang", to: "taitung", mode: "drive", label: "Collect the car, drive into Taitung" },
+      { from: "fugang", to: "taitung", mode: "drive", label: "Collect the car" },
+      { from: "taitung", to: "yuli", mode: "drive", label: "Rift valley Hwy 9 (~1.5 h) — or coastal Hwy 11 + 30 via Sanxiantai" },
     ],
     photos: [
       [WM + "e/e1/Zhaori_Hot_Springs_20150128.jpg/960px-Zhaori_Hot_Springs_20150128.jpg", "Zhaori Hot Springs at dawn"],
@@ -240,41 +241,42 @@ const DAYS = [
         <li>Breakfast, check out by ~8:15 (checkout is 10 am, but the memorial is across the island)</li>
         <li><b>White Terror Memorial Park</b> from ~8:45 — the former political-prison complex, the most affecting thing on the island; ~2.5 h fits before returning the scooters in Nanliao and boarding by ~11:30</li>
       </ul>
-      <h4>Afternoon — free in Taitung from ~1 pm</h4>
+      <h4>Afternoon — on the road from ~1 pm</h4>
       <ul>
-        <li>Collect the car at Fugang, late lunch</li>
-        <li>Seaside bikeway / Taitung Forest Park, a nap, or the Dabaisha swim you skipped</li>
-        <li>Evening: Tiehua Village live music, night market, seafront</li>
+        <li>Collect the car at Fugang, late lunch in Taitung</li>
+        <li>Drive to Yuli: rift valley Hwy 9 direct (~1.5 h), or — if legs and light allow — coastal Hwy 11 north with the <b>Sanxiantai</b> stop, then Hwy 30 across (~3 h total). That banks one of the two flex anchors on arrival day</li>
+        <li>Settle into <b>Wisdom Garden</b> (Airbnb), your base for the next two nights; quiet Yuli evening, noodles are the local specialty</li>
       </ul>
-      <div class="tip">The noon return means the memorial is the morning's only anchor — skip the cross-island trail this round. If the sea turns and the noon boat is cancelled, later crossings still get you back with the whole afternoon as slack.</div>`
+      <div class="tip">The noon return means the memorial is the morning's only island anchor — skip the cross-island trail this round. A cancelled noon boat costs nothing: later crossings still leave time for the direct drive to Yuli.</div>`
   },
   {
-    date: "Oct 4", title: "Sanxiantai (if not done Oct 1) → over the hills to Yuli", stay: "Yuli",
-    places: ["taitung", "sanxiantai", "yuli"],
+    date: "Oct 4", title: "Yuli flex day — Walami or Sanxiantai", stay: "Wisdom Garden, Yuli",
+    places: ["yuli", "walami", "sanxiantai"],
     legs: [
-      { from: "taitung", to: "sanxiantai", mode: "drive", label: "Coastal Hwy 11 north (~1.5 h, stop anywhere)" },
-      { from: "sanxiantai", to: "yuli", mode: "drive", label: "Hwy 30 across the Coastal Range (~1 h)" },
+      { from: "yuli", to: "walami", mode: "drive", label: "Option A: trailhead ~30 min from Yuli" },
+      { from: "walami", to: "walami", mode: "hike", label: "Walami Trail" },
+      { from: "yuli", to: "sanxiantai", mode: "drive", label: "Option B: Hwy 30 across to the coast (~1 h each way)" },
     ],
     photos: [
+      [WM + "c/c7/Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio.jpg/960px-Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio.jpg", "Walami Trail"],
       [WM + "d/d4/Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg/960px-Sanxiantai_Eight-arch_Bridge_under_blue_sky_with_clouds_on_14_May_2016.jpg", "Sanxiantai eight-arch bridge"],
-      [WM + "d/de/Sansiantai_Bridge_02.jpg/960px-Sansiantai_Bridge_02.jpg", "Sanxiantai bridge and islet"],
+      [WM + "4/4b/Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio_%281%29.jpg/960px-Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio_%281%29.jpg", "Walami Trail cliff path"],
     ],
     body: `
-      <h4>Activities</h4>
+      <h4>Two anchors, three slots — pick by weather</h4>
+      <div class="option"><b>A · Walami Trail</b> — trailhead ~30 min drive from Wisdom Garden. Jungle, suspension bridges, river valley toward Shanfeng Waterfall / Jiaxin; the best practical substitute for classic Taroko hiking. Lower section is gentle; permits only needed beyond the Jiaxin / 7 km boundary.</div>
+      <div class="option"><b>B · Sanxiantai</b> — Hwy 30 across the Coastal Range (~1 h each way): the eight-arch footbridge and islet loop (~1.5–2 h), tide pools, mahi-mahi lunch in Chenggong.</div>
       <ul>
-        <li>Drive up coastal Highway 11 at your own pace — a dozen small viewpoints and beaches between Taitung and Chenggong; stop wherever looks good</li>
-        <li><b>Sanxiantai</b> — the iconic eight-arch footbridge to a volcanic islet; cross it and walk the islet loop trail (~1.5–2 h)</li>
-        <li>Tide pools, coastal rock formations, lunch in the Amis fishing town of Chenggong (famous for mahi-mahi)</li>
-        <li>Highway 30 through the Coastal Range tunnel into the rift valley — lands practically at Yuli's door</li>
-        <li>Quiet evening in Yuli; noodles are the local specialty</li>
+        <li>Slot the remaining anchor into whichever of Oct 3 afternoon / today / tomorrow morning has the best weather — hiking Walami in rain is miserable, Sanxiantai shrugs it off</li>
+        <li>If both got done early, today is pure rest: Antong Hot Springs (~15 min south), Yuli's famous noodles, rift-valley cycling</li>
       </ul>
-      <div class="tip">Under 3 h of total driving, all scenic, total stopping freedom. Already did Sanxiantai on Oct 1? Then today is a direct ~1.5 h hop to Yuli via the rift valley — sleep in, revisit Tiehua, or detour to Luye's highlands instead. Yuli guesthouses have easy parking.</div>`
+      <div class="tip">Ideal split: Sanxiantai on Oct 3's drive in (or today), Walami today (or tomorrow before the drive north). Wisdom Garden is the two-night base — no repacking between hikes.</div>`
   },
   {
-    date: "Oct 5", title: "Walami Trail → drive north to Taipei", stay: "Taipei",
+    date: "Oct 5", title: "Morning flex (Walami if not done) → drive north to Taipei", stay: "Taipei",
     places: ["yuli", "walami", "hualien", "taipei"],
     legs: [
-      { from: "yuli", to: "walami", mode: "drive", label: "Drive to the trailhead (~30 min)" },
+      { from: "yuli", to: "walami", mode: "drive", label: "Morning Walami if it's still pending" },
       { from: "yuli", to: "hualien", mode: "drive", label: "Rift valley north" },
       { from: "hualien", to: "taipei", mode: "drive", label: "Suhua Hwy 9 back to Taipei (~4.5 h total)" },
     ],
@@ -283,17 +285,12 @@ const DAYS = [
       [WM + "4/4b/Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio_%281%29.jpg/960px-Walami_Trail_%E7%93%A6%E6%8B%89%E7%B1%B3%E6%AD%A5%E9%81%93_-_panoramio_%281%29.jpg", "Walami Trail cliff path"],
     ],
     body: `
-      <h4>Primary hike</h4>
+      <h4>Last flex slot, then the drive home</h4>
       <ul>
-        <li><b>Walami Trail</b> — drive to the trailhead yourselves, start early</li>
-        <li>Jungle, suspension bridges, river valley and mountain scenery toward Shanfeng Waterfall / Jiaxin</li>
-        <li>Best practical substitute for the classic Taroko hiking experience</li>
-      </ul>
-      <div class="tip">The lower recreational section is relatively gentle; permits are required only beyond the Jiaxin / 7 km boundary.</div>
-      <h4>Logistics</h4>
-      <ul>
-        <li>Hike in the morning, lunch in Yuli, then ~4.5 h north — rotate drivers, the fresh one takes the Suhua stretch</li>
-        <li>Aim to be off the highway before dark; arrive Taipei in time for a night market dinner</li>
+        <li>If Walami is still pending: early start, hike the morning, lunch in Yuli, wheels north by ~1 pm</li>
+        <li>If both anchors are done: sleep in, Antong Hot Springs or a rift-valley stop, leave whenever</li>
+        <li>~4.5 h to Taipei — rotate drivers, the fresh one takes the Suhua stretch; Qingshui Cliffs pull-off again if you want the view from the other direction</li>
+        <li>Aim to be off the highway before dark; arrive in time for a night market dinner</li>
         <li>Return the car this evening, or keep it till departure if the Taipei hotel's parking is cheap</li>
       </ul>`
   },
